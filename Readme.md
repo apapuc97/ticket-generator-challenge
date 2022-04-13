@@ -15,46 +15,46 @@ The backtracking algorithm takes a strip as a parameter (which is empty at the f
  * @return true if all positions were filled. False otherwise
  */
 private boolean backtrackingPositionGeneration(Strip strip) {
-        //validate if the current state can lead to a solution
-        if (!stripValidator.hasValidState(strip)) {
+    //validate if the current state can lead to a solution
+    if (!stripValidator.hasValidState(strip)) {
         return false;
-        }
+    }
 
-        for (int column = 0; column < Strip.COLUMNS_COUNT; column++) {
-
+    for (int column = 0; column < Strip.COLUMNS_COUNT; column++) {
+    
         if (strip.columnIsFilled(column)) {
-        continue;
+            continue;
         }
-
+    
         List<Integer> possiblePositions = stripValidator.getPossiblePositionsForColumn(strip, column);
         int positionsCountLeftToBeFilled = strip.getPositionsCountToBeFilledForColumn(column);
-
+    
         Collections.shuffle(possiblePositions);
-
+    
         for (int i = 0; i < possiblePositions.size(); i++) {
-
-        if (positionsCountLeftToBeFilled > possiblePositions.size() - i) {
-        return false;
+    
+            if (positionsCountLeftToBeFilled > possiblePositions.size() - i) {
+                return false;
+            }
+    
+            int row = possiblePositions.get(i);
+    
+            strip.fillPosition(row, column);
+    
+            if (backtrackingPositionGeneration(strip)) {
+                return true;
+            }
+    
+            strip.undoFilling(row, column);
         }
-
-        int row = possiblePositions.get(i);
-
-        strip.fillPosition(row, column);
-
-        if (backtrackingPositionGeneration(strip)) {
-        return true;
-        }
-
-        strip.undoFilling(row, column);
-        }
-
+    
         // if current column is not filled after last 'for' cycle, then we should go back to the last solution
         if (!strip.columnIsFilled(column)) {
-        return false;
+            return false;
         }
-        }
-        return true;
-        }
+    }
+    return true;
+}
 ````
 
 - StripValidatorService#isValidState() method checks if the current state of the strip is a valid one. Here are done multiple checks in order to prevent generating positions further if the current state will not lead to a solution.

@@ -2,8 +2,11 @@ package com.ticket.generator.service;
 
 import com.ticket.generator.model.Strip;
 import com.ticket.generator.model.Ticket;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,10 +17,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 class StripGeneratorServiceTest {
 
     /**
-     * Tests that generated strip met all the conditions described in the assignment
+     * Tests that generated strip met all of the required conditions described in the assignment
      */
     @Test
-    void generateStrip() {
+    void testGeneratedStripMetAllRequiredConditions() {
         StripGeneratorService stripGeneratorService = new StripGeneratorService();
         Strip strip = stripGeneratorService.generateStrip();
 
@@ -26,6 +29,20 @@ class StripGeneratorServiceTest {
         assertNoEmptyColumnsPerTicket(strip);
         assertOrderedColumnsPerTicket(strip);
         assertAllNumbersAreFilled(strip);
+    }
+
+    /**
+     * Tests that generated strip met all the conditions described in the assignment
+     */
+    @Test
+    void testStripGenerationPerformance() {
+        StripGeneratorService stripGeneratorService = new StripGeneratorService();
+
+        Assertions.assertTimeout(Duration.ofSeconds(1), () -> {
+            for (int i = 0; i < 10000; i++) {
+                stripGeneratorService.generateStrip();
+            }
+        });
     }
 
     /**
